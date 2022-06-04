@@ -5,9 +5,9 @@
     android:layout_height="match_parent"
     tools:context=".HomeFragment">
 
-    <TextView
+    <com.google.android.gms.maps.MapView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:text="홈페이지" />
-
+        android:id="@+id/mapView"
+        android:name="com.google.android.gms.maps.MapFragment" />
 </LinearLayout>
