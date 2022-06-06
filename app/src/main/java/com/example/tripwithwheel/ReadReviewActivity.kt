@@ -12,18 +12,5 @@ class ReadReviewActivity : AppCompatActivity() {
 
         val binding = ActivityReadReviewBinding.inflate(layoutInflater)
         setContentView(binding.root)
-
-        binding.logoutBtn.setOnClickListener {
-            MyApplication.auth.signOut()
-            MyApplication.email = null
-
-            finish()
-        }
-
-        binding.goToHomeBtn.setOnClickListener {
-            val intent = Intent(this, MainActivity::class.java)
-            startActivity(intent)
-        }
-
     }
 }

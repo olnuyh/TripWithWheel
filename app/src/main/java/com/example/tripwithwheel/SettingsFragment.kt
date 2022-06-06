@@ -5,6 +5,9 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
+import com.example.tripwithwheel.databinding.FragmentSettingsBinding
+import com.kakao.sdk.user.UserApiClient
 
 // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
 private const val ARG_PARAM1 = "param1"
@@ -32,7 +35,21 @@ class SettingsFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_settings, container, false)
+        val binding = FragmentSettingsBinding.inflate(inflater, container, false)
+        binding.logoutBtn.setOnClickListener {
+            MyApplication.auth.signOut()
+            MyApplication.email = null
+
+            UserApiClient.instance.logout { error ->
+                if(error != null){
+                    Toast.makeText(context, "로그아웃 실패", Toast.LENGTH_SHORT).show()
+                }
+                else{
+                    Toast.makeText(context, "로그아웃 성공", Toast.LENGTH_SHORT).show()
+                }
+            }
+        }
+        return binding.root
     }
 
     companion object {

@@ -5,6 +5,7 @@ import androidx.multidex.MultiDexApplication
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
+import com.kakao.sdk.common.KakaoSdk
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 
@@ -43,5 +44,6 @@ class MyApplication : MultiDexApplication(){
     override fun onCreate() {
         super.onCreate()
         auth = Firebase.auth
+        KakaoSdk.init(this, "b24008d58fe7744b00916fefa69494b1")
     }
 }

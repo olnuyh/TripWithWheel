@@ -5,9 +5,10 @@
     android:layout_height="match_parent"
     tools:context=".SettingsFragment">
 
-    <TextView
+    <Button
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:text="설정페이지" />
+        android:layout_height="wrap_content"
+        android:text="로그아웃"
+        android:id="@+id/logoutBtn"/>
 
 </FrameLayout>
