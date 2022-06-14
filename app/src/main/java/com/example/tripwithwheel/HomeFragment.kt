@@ -2,6 +2,7 @@ package com.example.tripwithwheel
 
 import android.Manifest
 import android.content.pm.PackageManager
+import android.location.Address
 import android.location.Geocoder
 import android.location.Location
 import android.os.Bundle
@@ -62,6 +63,11 @@ class HomeFragment : Fragment(), OnMapReadyCallback {
         //val toilet = MyApplication.result_toilet.viewAmenitiesInfo.row
         //val charging = MyApplication.result_charging.tbElecWheelChrCharge.row
 
+        val spot = MyApplication.result_spot.TbVwAttractions.row
+        val restaurant = MyApplication.result_restaurant.touristFoodInfo.row
+        val toilet = MyApplication.result_toilet.viewAmenitiesInfo.row
+        val charging = MyApplication.result_charging.tbElecWheelChrCharge.row
+
         binding.mapView.onCreate(savedInstanceState)
         binding.mapView.onResume()
         binding.mapView.getMapAsync(this)
@@ -114,25 +120,34 @@ class HomeFragment : Fragment(), OnMapReadyCallback {
 
      */
 
+    private fun geocoder(addr : String) : MutableList<Double> {
+        val geocoder = Geocoder(context)
+        val geocodedAddress = geocoder.getFromLocationName(addr, 1)
+
+        val latitude = geocodedAddress[0].latitude
+        val longitude = geocodedAddress[0].longitude
+
+        val loc = arrayListOf<Double>(latitude, longitude)
+
+        return loc
+    }
+
     override fun onMapReady(p0: GoogleMap?) {
         googleMap = p0
 
         val spot = MyApplication.result_spot.TbVwAttractions.row
+        Log.d("mobileApp", "$spot")
 
         for (i in 0 until spot.size) { //관광지 데이터 각각 주소를 가져와서 geocoder로 위도, 경도 정보를 얻어와 지도에 마커로 표시
             if(spot[i].ADDRESS.equals("")){ //주소에 대한 정보가 없는 장소는 배제
                 continue
             }
 
-            val geocoder = Geocoder(context)
-            val geocodedAddress = geocoder.getFromLocationName(spot[i].ADDRESS, 1)
-
-            val latitude = geocodedAddress[0].latitude
-            val longitude = geocodedAddress[0].longitude
+            val loc = geocoder(spot[i].ADDRESS)
 
             val markerOp = MarkerOptions()
             markerOp.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED)) //관광지는 빨간색 마커로 표시
-            markerOp.position(LatLng(latitude, longitude))
+            markerOp.position(LatLng(loc[0], loc[1]))
             markerOp.title(spot[i].POST_SJ)
 
             googleMap?.addMarker(markerOp)
@@ -140,21 +155,18 @@ class HomeFragment : Fragment(), OnMapReadyCallback {
         }
 
         val restaurant = MyApplication.result_restaurant.touristFoodInfo.row
+        Log.d("mobileApp", "$restaurant")
 
         for (i in 0 until restaurant.size) { //음식점점 데이터 각각 주소를 가져와서 geocoder로 위도, 도 정보를 얻어와 지도에 마커로 표시
             if(restaurant[i].ADDR.equals("")){ //주소에 대한 정보가 없는 장소는 배제
                 continue
             }
 
-            val geocoder = Geocoder(context)
-            val geocodedAddress = geocoder.getFromLocationName(restaurant[i].ADDR, 1)
-
-            val latitude = geocodedAddress[0].latitude
-            val longitude = geocodedAddress[0].longitude
+            val loc = geocoder(restaurant[i].ADDR)
 
             val markerOp = MarkerOptions()
             markerOp.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_ORANGE)) //음식점은 주황색 마커로 표시
-            markerOp.position(LatLng(latitude, longitude))
+            markerOp.position(LatLng(loc[0], loc[1]))
             markerOp.title(restaurant[i].SISULNAME)
 
             googleMap?.addMarker(markerOp)
@@ -162,28 +174,27 @@ class HomeFragment : Fragment(), OnMapReadyCallback {
         }
 
         val toilet = MyApplication.result_toilet.viewAmenitiesInfo.row
+        Log.d("mobileApp", "$toilet")
 
         for (i in 0 until toilet.size) { //화장실 데이터 각각 주소를 가져와서 geocoder로 위도, 경도 정보를 얻어와 지도에 마커로 표시
             if(toilet[i].ADDR.equals("")){ //주소에 대한 정보가 없는 장소는 배제
                 continue
             }
 
-            val geocoder = Geocoder(context)
-            val geocodedAddress = geocoder.getFromLocationName(toilet[i].ADDR, 1)
-
-            val latitude = geocodedAddress[0].latitude
-            val longitude = geocodedAddress[0].longitude
+            val loc = geocoder(toilet[i].ADDR)
 
             val markerOp = MarkerOptions()
             markerOp.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_YELLOW)) //화장실은 노란색 마커로 표시
-            markerOp.position(LatLng(latitude, longitude))
+            markerOp.position(LatLng(loc[0], loc[1]))
             markerOp.title(toilet[i].SISULNAME)
 
             googleMap?.addMarker(markerOp)
 
         }
 
+        /*
         val charging = MyApplication.result_charging.tbElecWheelChrCharge.row
+        Log.d("mobileApp", "$charging")
 
         for (i in 0 until charging.size) { //충전소 데이터 각각 위도와 경도를 가져와서 지도에 마커로 표시
             if(charging[i].LATITUDE.equals("") || charging[i].LONGITUDE.equals("")){ //위도나 경도에 대한 정보가 없는 장소는 배제
@@ -200,6 +211,8 @@ class HomeFragment : Fragment(), OnMapReadyCallback {
 
             googleMap?.addMarker(markerOp)
         }
+
+         */
 
         /*
         providerClient = LocationServices.getFusedLocationProviderClient(context as MainActivity)

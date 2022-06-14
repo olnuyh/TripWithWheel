@@ -23,8 +23,8 @@ import com.kakao.sdk.user.UserApiClient
 
             MyApplication.auth.signInWithEmailAndPassword(email, password)
                 .addOnCompleteListener(this) { task ->
-                    binding.loginId.text.clear()
-                    binding.loginPwd.text.clear()
+                    //binding.loginId.text.clear()
+                    //binding.loginPwd.text.clear()
 
                     if(task.isSuccessful){
                         if(MyApplication.checkAuth()){
