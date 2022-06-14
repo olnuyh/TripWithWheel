@@ -41,23 +41,8 @@ class ListChargingFragment : Fragment() {
     ): View? {
         // Inflate the layout for this fragment
         val binding = FragmentListChargingBinding.inflate(inflater, container, false)
-        val call : Call<ChargingModel> = MyApplication.networkServiceCharging.getChargingList(
-            apiKey = "54674a6d79726968313867504c5a4d"
-        )
-
-        call?.enqueue(object : Callback<ChargingModel> {
-            override fun onResponse(call: Call<ChargingModel>, response: Response<ChargingModel>) {
-                if(response.isSuccessful){
-                    binding.chargingRecyclerView.layoutManager = LinearLayoutManager(activity)
-                    var result = response.body() as ChargingModel
-                    binding.chargingRecyclerView.adapter = ChargingAdapter(activity as Context, result.tbElecWheelChrCharge.row)
-                }
-            }
-
-            override fun onFailure(call: Call<ChargingModel>, t: Throwable) {
-                Log.d("mobileApp", "onFailure")
-            }
-        })
+        binding.chargingRecyclerView.layoutManager = LinearLayoutManager(activity)
+        binding.chargingRecyclerView.adapter = ChargingAdapter(activity as Context, MyApplication.result_charging.tbElecWheelChrCharge.row)
 
         return binding.root
     }

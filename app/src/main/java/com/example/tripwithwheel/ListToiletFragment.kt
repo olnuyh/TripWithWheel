@@ -41,23 +41,8 @@ class ListToiletFragment : Fragment() {
     ): View? {
         // Inflate the layout for this fragment
         val binding = FragmentListToiletBinding.inflate(inflater, container, false)
-        val call : Call<ToiletModel> = MyApplication.networkServiceToilet.getToiletList(
-            apiKey = "54674a6d79726968313867504c5a4d"
-        )
-
-        call?.enqueue(object : Callback<ToiletModel> {
-            override fun onResponse(call: Call<ToiletModel>, response: Response<ToiletModel>) {
-                if(response.isSuccessful){
-                    binding.toiletRecyclerView.layoutManager = LinearLayoutManager(activity)
-                    var result = response.body() as ToiletModel
-                    binding.toiletRecyclerView.adapter = ToiletAdapter(activity as Context, result.viewAmenitiesInfo.row)
-                }
-            }
-
-            override fun onFailure(call: Call<ToiletModel>, t: Throwable) {
-                Log.d("mobileApp", "onFailure")
-            }
-        })
+        binding.toiletRecyclerView.layoutManager = LinearLayoutManager(activity)
+        binding.toiletRecyclerView.adapter = ToiletAdapter(activity as Context, MyApplication.result_toilet.viewAmenitiesInfo.row)
 
         return binding.root
     }

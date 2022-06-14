@@ -40,23 +40,8 @@ class ListSpotFragment : Fragment() {
     ): View? {
         // Inflate the layout for this fragment
         val binding = FragmentListSpotBinding.inflate(inflater, container, false)
-        val call : Call<SpotModel> = MyApplication.networkServiceSpot.getSpotList(
-            apiKey = "54674a6d79726968313867504c5a4d"
-        )
-
-        call?.enqueue(object : Callback<SpotModel>{
-            override fun onResponse(call: Call<SpotModel>, response: Response<SpotModel>) {
-                if(response.isSuccessful){
-                    binding.spotRecyclerView.layoutManager = LinearLayoutManager(activity)
-                    var result = response.body() as SpotModel
-                    binding.spotRecyclerView.adapter = SpotAdapter(activity as Context, result.TbVwAttractions.row)
-                }
-            }
-
-            override fun onFailure(call: Call<SpotModel>, t: Throwable) {
-                Log.d("mobileApp", "onFailure")
-            }
-        })
+        binding.spotRecyclerView.layoutManager = LinearLayoutManager(activity)
+        binding.spotRecyclerView.adapter = SpotAdapter(activity as Context, MyApplication.result_spot.TbVwAttractions.row)
 
         return binding.root
     }

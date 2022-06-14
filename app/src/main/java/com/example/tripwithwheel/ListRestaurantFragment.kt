@@ -41,23 +41,8 @@ class ListRestaurantFragment : Fragment() {
     ): View? {
         // Inflate the layout for this fragment
         val binding = FragmentListRestaurantBinding.inflate(inflater, container, false)
-        val call : Call<RestaurantModel> = MyApplication.networkServiceRestaurant.getRestaurantList(
-            apiKey = "54674a6d79726968313867504c5a4d"
-        )
-
-        call?.enqueue(object : Callback<RestaurantModel> {
-            override fun onResponse(call: Call<RestaurantModel>, response: Response<RestaurantModel>) {
-                if(response.isSuccessful){
-                    binding.restaurantRecyclerView.layoutManager = LinearLayoutManager(activity)
-                    var result = response.body() as RestaurantModel
-                    binding.restaurantRecyclerView.adapter = RestaurantAdapter(activity as Context, result.touristFoodInfo.row)
-                }
-            }
-
-            override fun onFailure(call: Call<RestaurantModel>, t: Throwable) {
-                Log.d("mobileApp", "onFailure")
-            }
-        })
+        binding.restaurantRecyclerView.layoutManager = LinearLayoutManager(activity)
+        binding.restaurantRecyclerView.adapter = RestaurantAdapter(activity as Context, MyApplication.result_restaurant.touristFoodInfo.row)
 
         return binding.root
     }

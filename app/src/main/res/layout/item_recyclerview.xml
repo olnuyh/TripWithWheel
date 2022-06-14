@@ -28,4 +28,21 @@
         android:id="@+id/tel"
         android:textSize="20dp"
         android:textColor="#d3d3d3"/>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="horizontal">
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="리뷰"
+            android:id="@+id/readReviews"/>
+
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="등록"
+            android:id="@+id/addSchedule"/>
+    </LinearLayout>
 </LinearLayout>

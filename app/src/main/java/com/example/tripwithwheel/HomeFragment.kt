@@ -1,15 +1,20 @@
 package com.example.tripwithwheel
 
-import android.content.Context
+import android.Manifest
+import android.content.pm.PackageManager
 import android.location.Geocoder
+import android.location.Location
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
+import androidx.activity.result.contract.ActivityResultContracts
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
-import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.tripwithwheel.databinding.FragmentHomeBinding
+import com.google.android.gms.common.ConnectionResult
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.OnMapReadyCallback
@@ -17,6 +22,7 @@ import com.google.android.gms.maps.model.BitmapDescriptorFactory
 import com.google.android.gms.maps.model.CameraPosition
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.MarkerOptions
+import com.google.android.gms.tasks.OnSuccessListener
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -33,10 +39,6 @@ private const val ARG_PARAM2 = "param2"
 class HomeFragment : Fragment(), OnMapReadyCallback {
     private var param1: String? = null
     private var param2: String? = null
-    private lateinit var result_spot : SpotModel //관광지 데이터에 대한 변수
-    private lateinit var result_restaurant : RestaurantModel //음식점 데이터에 대한 변수
-    private lateinit var result_charging : ChargingModel //충전소 데이터에 대한 변수
-    private lateinit var result_toilet : ToiletModel //화장실 데이터에 대한 변수
     private var googleMap : GoogleMap? = null
     private lateinit var binding : FragmentHomeBinding
 
@@ -55,80 +57,67 @@ class HomeFragment : Fragment(), OnMapReadyCallback {
         // Inflate the layout for this fragment
         binding = FragmentHomeBinding.inflate(inflater, container, false)
 
-        val call_spot : Call<SpotModel> = MyApplication.networkServiceSpot.getSpotList(
-            apiKey = "54674a6d79726968313867504c5a4d"
-        )
-
-        call_spot?.enqueue(object : Callback<SpotModel>{
-            override fun onResponse(call: Call<SpotModel>, response: Response<SpotModel>) {
-                if(response.isSuccessful){
-                    result_spot = response.body() as SpotModel
-                }
-            }
-
-            override fun onFailure(call: Call<SpotModel>, t: Throwable) {
-                Log.d("mobileApp", "onFailure")
-            }
-        })
-
-        val call_restaurant : Call<RestaurantModel> = MyApplication.networkServiceRestaurant.getRestaurantList(
-            apiKey = "54674a6d79726968313867504c5a4d"
-        )
-
-        call_restaurant?.enqueue(object : Callback<RestaurantModel> {
-            override fun onResponse(call: Call<RestaurantModel>, response: Response<RestaurantModel>) {
-                if(response.isSuccessful){
-                    result_restaurant = response.body() as RestaurantModel
-                }
-            }
-
-            override fun onFailure(call: Call<RestaurantModel>, t: Throwable) {
-                Log.d("mobileApp", "onFailure")
-            }
-        })
-
-        val call_toilet : Call<ToiletModel> = MyApplication.networkServiceToilet.getToiletList(
-            apiKey = "54674a6d79726968313867504c5a4d"
-        )
-
-        call_toilet?.enqueue(object : Callback<ToiletModel> {
-            override fun onResponse(call: Call<ToiletModel>, response: Response<ToiletModel>) {
-                if(response.isSuccessful){
-                    result_toilet = response.body() as ToiletModel
-                }
-            }
-
-            override fun onFailure(call: Call<ToiletModel>, t: Throwable) {
-                Log.d("mobileApp", "onFailure")
-            }
-        })
-
-        val call_charging : Call<ChargingModel> = MyApplication.networkServiceCharging.getChargingList(
-            apiKey = "54674a6d79726968313867504c5a4d"
-        )
-
-        call_charging?.enqueue(object : Callback<ChargingModel> {
-            override fun onResponse(call: Call<ChargingModel>, response: Response<ChargingModel>) {
-                if(response.isSuccessful){
-                    result_charging = response.body() as ChargingModel //충전소 데이터 모두 가져와서 변수에 담기
-                }
-            }
-
-            override fun onFailure(call: Call<ChargingModel>, t: Throwable) {
-                Log.d("mobileApp", "onFailure")
-            }
-        })
+        //val spot = MyApplication.result_spot.TbVwAttractions.row
+        //val restaurant = MyApplication.result_restaurant.touristFoodInfo.row
+        //val toilet = MyApplication.result_toilet.viewAmenitiesInfo.row
+        //val charging = MyApplication.result_charging.tbElecWheelChrCharge.row
 
         binding.mapView.onCreate(savedInstanceState)
+        binding.mapView.onResume()
         binding.mapView.getMapAsync(this)
 
         return binding.root
     }
 
+    /*
+    private fun moveMap(latitude : Double, longitude : Double){
+        val latLng = LatLng(latitude, longitude)
+        val position : CameraPosition = CameraPosition.Builder()
+            .target(latLng)
+            .zoom(16f)
+            .build()
+        googleMap!!.moveCamera(CameraUpdateFactory.newCameraPosition(position))
+
+        val markerOp = MarkerOptions()
+        markerOp.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_AZURE))
+        markerOp.position(latLng)
+        markerOp.title("My Location")
+        googleMap?.addMarker(markerOp)
+    }
+
+    override fun onConnected(p0: Bundle?) {
+        if(ContextCompat.checkSelfPermission(context as MainActivity, Manifest.permission.ACCESS_FINE_LOCATION) === PackageManager.PERMISSION_GRANTED){
+            providerClient.lastLocation.addOnSuccessListener(
+                context as MainActivity,
+                object : OnSuccessListener<Location> {
+                    override fun onSuccess(p0: Location?) {
+                        p0?.let{
+                            val latitude = p0.latitude
+                            val longitude = p0.longitude
+                            Log.d("mobileApp", "lat: $latitude, lng: $longitude")
+                            moveMap(latitude, longitude)
+                        }
+                    }
+                }
+            )
+            apiClient.disconnect()
+        }
+    }
+
+    override fun onConnectionFailed(p0: ConnectionResult) {
+
+    }
+
+    override fun onConnectionSuspended(p0: Int) {
+
+    }
+
+     */
+
     override fun onMapReady(p0: GoogleMap?) {
         googleMap = p0
 
-        val spot = result_spot.TbVwAttractions.row
+        val spot = MyApplication.result_spot.TbVwAttractions.row
 
         for (i in 0 until spot.size) { //관광지 데이터 각각 주소를 가져와서 geocoder로 위도, 경도 정보를 얻어와 지도에 마커로 표시
             if(spot[i].ADDRESS.equals("")){ //주소에 대한 정보가 없는 장소는 배제
@@ -141,15 +130,8 @@ class HomeFragment : Fragment(), OnMapReadyCallback {
             val latitude = geocodedAddress[0].latitude
             val longitude = geocodedAddress[0].longitude
 
-            val position : CameraPosition = CameraPosition.Builder()
-                .target(LatLng(latitude, longitude))
-                .zoom(16F)
-                .build()
-
-            googleMap!!.moveCamera(CameraUpdateFactory.newCameraPosition(position))
-
             val markerOp = MarkerOptions()
-            markerOp.icon(BitmapDescriptorFactory.fromResource(R.drawable.marker_spot)) //관광지는 빨간색 마커로 표시
+            markerOp.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED)) //관광지는 빨간색 마커로 표시
             markerOp.position(LatLng(latitude, longitude))
             markerOp.title(spot[i].POST_SJ)
 
@@ -157,7 +139,7 @@ class HomeFragment : Fragment(), OnMapReadyCallback {
 
         }
 
-        val restaurant = result_restaurant.touristFoodInfo.row
+        val restaurant = MyApplication.result_restaurant.touristFoodInfo.row
 
         for (i in 0 until restaurant.size) { //음식점점 데이터 각각 주소를 가져와서 geocoder로 위도, 도 정보를 얻어와 지도에 마커로 표시
             if(restaurant[i].ADDR.equals("")){ //주소에 대한 정보가 없는 장소는 배제
@@ -170,15 +152,8 @@ class HomeFragment : Fragment(), OnMapReadyCallback {
             val latitude = geocodedAddress[0].latitude
             val longitude = geocodedAddress[0].longitude
 
-            val position : CameraPosition = CameraPosition.Builder()
-                .target(LatLng(latitude, longitude))
-                .zoom(16F)
-                .build()
-
-            googleMap!!.moveCamera(CameraUpdateFactory.newCameraPosition(position))
-
             val markerOp = MarkerOptions()
-            markerOp.icon(BitmapDescriptorFactory.fromResource(R.drawable.marker_restaurant)) //음식점은 주황색 마커로 표시
+            markerOp.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_ORANGE)) //음식점은 주황색 마커로 표시
             markerOp.position(LatLng(latitude, longitude))
             markerOp.title(restaurant[i].SISULNAME)
 
@@ -186,7 +161,7 @@ class HomeFragment : Fragment(), OnMapReadyCallback {
 
         }
 
-        val toilet = result_toilet.viewAmenitiesInfo.row
+        val toilet = MyApplication.result_toilet.viewAmenitiesInfo.row
 
         for (i in 0 until toilet.size) { //화장실 데이터 각각 주소를 가져와서 geocoder로 위도, 경도 정보를 얻어와 지도에 마커로 표시
             if(toilet[i].ADDR.equals("")){ //주소에 대한 정보가 없는 장소는 배제
@@ -199,15 +174,8 @@ class HomeFragment : Fragment(), OnMapReadyCallback {
             val latitude = geocodedAddress[0].latitude
             val longitude = geocodedAddress[0].longitude
 
-            val position : CameraPosition = CameraPosition.Builder()
-                .target(LatLng(latitude, longitude))
-                .zoom(16F)
-                .build()
-
-            googleMap!!.moveCamera(CameraUpdateFactory.newCameraPosition(position))
-
             val markerOp = MarkerOptions()
-            markerOp.icon(BitmapDescriptorFactory.fromResource(R.drawable.marker_toilet)) //화장실은 노란색 마커로 표시
+            markerOp.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_YELLOW)) //화장실은 노란색 마커로 표시
             markerOp.position(LatLng(latitude, longitude))
             markerOp.title(toilet[i].SISULNAME)
 
@@ -215,7 +183,7 @@ class HomeFragment : Fragment(), OnMapReadyCallback {
 
         }
 
-        val charging = result_charging.tbElecWheelChrCharge.row
+        val charging = MyApplication.result_charging.tbElecWheelChrCharge.row
 
         for (i in 0 until charging.size) { //충전소 데이터 각각 위도와 경도를 가져와서 지도에 마커로 표시
             if(charging[i].LATITUDE.equals("") || charging[i].LONGITUDE.equals("")){ //위도나 경도에 대한 정보가 없는 장소는 배제
@@ -225,51 +193,45 @@ class HomeFragment : Fragment(), OnMapReadyCallback {
             val latitude = (charging[i].LATITUDE).toDouble()
             val longitude = (charging[i].LONGITUDE).toDouble()
 
-            val position : CameraPosition = CameraPosition.Builder()
-                .target(LatLng(latitude, longitude))
-                .zoom(16F)
-                .build()
-
-            googleMap!!.moveCamera(CameraUpdateFactory.newCameraPosition(position))
-
             val markerOp = MarkerOptions()
-            markerOp.icon(BitmapDescriptorFactory.fromResource(R.drawable.marker_charging)) //충전소는 초록색 마커로 표시
+            markerOp.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN)) //충전소는 초록색 마커로 표시
             markerOp.position(LatLng(latitude, longitude))
             markerOp.title(charging[i].FCLTYNM)
 
             googleMap?.addMarker(markerOp)
-
         }
-    }
 
-    override fun onStart() {
-        super.onStart()
-        binding.mapView.onStart()
-    }
+        /*
+        providerClient = LocationServices.getFusedLocationProviderClient(context as MainActivity)
+        apiClient = GoogleApiClient.Builder(context as MainActivity)
+            .addApi(LocationServices.API)
+            .addConnectionCallbacks(this)
+            .addOnConnectionFailedListener(this)
+            .build()
 
-    override fun onStop() {
-        super.onStop()
-        binding.mapView.onStop()
-    }
+        val requestPermissionLauncher = registerForActivityResult(ActivityResultContracts.RequestMultiplePermissions()){
+            if(it.all{ permission -> permission.value == true}){
+                apiClient.connect()
+            }else{
+                Toast.makeText(context as MainActivity, "권한 거부..", Toast.LENGTH_LONG).show()
+            }
+        }
 
-    override fun onResume() {
-        super.onResume()
-        binding.mapView.onResume()
-    }
+        if(ContextCompat.checkSelfPermission(context as MainActivity, Manifest.permission.ACCESS_FINE_LOCATION) !== PackageManager.PERMISSION_GRANTED
+            || ContextCompat.checkSelfPermission(context as MainActivity, Manifest.permission.WRITE_EXTERNAL_STORAGE) !== PackageManager.PERMISSION_GRANTED
+            || ContextCompat.checkSelfPermission(context as MainActivity, Manifest.permission.ACCESS_NETWORK_STATE) !== PackageManager.PERMISSION_GRANTED){
+            requestPermissionLauncher.launch(
+                arrayOf(Manifest.permission.ACCESS_FINE_LOCATION,
+                    Manifest.permission.WRITE_EXTERNAL_STORAGE,
+                    Manifest.permission.ACCESS_NETWORK_STATE
+                )
+            )
+        }
+        else{
+            apiClient.connect()
+        }
 
-    override fun onPause() {
-        super.onPause()
-        binding.mapView.onPause()
-    }
-
-    override fun onLowMemory() {
-        super.onLowMemory()
-        binding.mapView.onLowMemory()
-    }
-
-    override fun onDestroy() {
-        binding.mapView.onDestroy()
-        super.onDestroy()
+         */
     }
 
     companion object {
