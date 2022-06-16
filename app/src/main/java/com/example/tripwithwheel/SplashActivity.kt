@@ -18,8 +18,11 @@ class SplashActivity : AppCompatActivity() {
         val mainExecutor : Executor = ContextCompat.getMainExecutor(this)
         backgroundExecutor.schedule({
             mainExecutor.execute{
-                val intent = Intent(applicationContext, LoginActivity::class.java)
-                startActivity(intent)
+                val intent = Intent(applicationContext, AddressIntentService::class.java)
+                startService(intent)
+
+                val intent2 = Intent(applicationContext, LoginActivity::class.java)
+                startActivity(intent2)
                 finish()
             }
         }, 2, TimeUnit.SECONDS)

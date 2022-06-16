@@ -58,16 +58,6 @@ class HomeFragment : Fragment(), OnMapReadyCallback {
         // Inflate the layout for this fragment
         binding = FragmentHomeBinding.inflate(inflater, container, false)
 
-        //val spot = MyApplication.result_spot.TbVwAttractions.row
-        //val restaurant = MyApplication.result_restaurant.touristFoodInfo.row
-        //val toilet = MyApplication.result_toilet.viewAmenitiesInfo.row
-        //val charging = MyApplication.result_charging.tbElecWheelChrCharge.row
-
-        val spot = MyApplication.result_spot.TbVwAttractions.row
-        val restaurant = MyApplication.result_restaurant.touristFoodInfo.row
-        val toilet = MyApplication.result_toilet.viewAmenitiesInfo.row
-        val charging = MyApplication.result_charging.tbElecWheelChrCharge.row
-
         binding.mapView.onCreate(savedInstanceState)
         binding.mapView.onResume()
         binding.mapView.getMapAsync(this)
@@ -83,14 +73,12 @@ class HomeFragment : Fragment(), OnMapReadyCallback {
             .zoom(16f)
             .build()
         googleMap!!.moveCamera(CameraUpdateFactory.newCameraPosition(position))
-
         val markerOp = MarkerOptions()
         markerOp.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_AZURE))
         markerOp.position(latLng)
         markerOp.title("My Location")
         googleMap?.addMarker(markerOp)
     }
-
     override fun onConnected(p0: Bundle?) {
         if(ContextCompat.checkSelfPermission(context as MainActivity, Manifest.permission.ACCESS_FINE_LOCATION) === PackageManager.PERMISSION_GRANTED){
             providerClient.lastLocation.addOnSuccessListener(
@@ -109,45 +97,25 @@ class HomeFragment : Fragment(), OnMapReadyCallback {
             apiClient.disconnect()
         }
     }
-
     override fun onConnectionFailed(p0: ConnectionResult) {
-
     }
-
     override fun onConnectionSuspended(p0: Int) {
-
     }
-
      */
-
-    private fun geocoder(addr : String) : MutableList<Double> {
-        val geocoder = Geocoder(context)
-        val geocodedAddress = geocoder.getFromLocationName(addr, 1)
-
-        val latitude = geocodedAddress[0].latitude
-        val longitude = geocodedAddress[0].longitude
-
-        val loc = arrayListOf<Double>(latitude, longitude)
-
-        return loc
-    }
 
     override fun onMapReady(p0: GoogleMap?) {
         googleMap = p0
 
         val spot = MyApplication.result_spot.TbVwAttractions.row
-        Log.d("mobileApp", "$spot")
 
         for (i in 0 until spot.size) { //관광지 데이터 각각 주소를 가져와서 geocoder로 위도, 경도 정보를 얻어와 지도에 마커로 표시
             if(spot[i].ADDRESS.equals("")){ //주소에 대한 정보가 없는 장소는 배제
                 continue
             }
 
-            val loc = geocoder(spot[i].ADDRESS)
-
             val markerOp = MarkerOptions()
             markerOp.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED)) //관광지는 빨간색 마커로 표시
-            markerOp.position(LatLng(loc[0], loc[1]))
+            markerOp.position(LatLng(MyApplication.spot_loc_lat[i], MyApplication.spot_loc_lon[i]))
             markerOp.title(spot[i].POST_SJ)
 
             googleMap?.addMarker(markerOp)
@@ -155,64 +123,49 @@ class HomeFragment : Fragment(), OnMapReadyCallback {
         }
 
         val restaurant = MyApplication.result_restaurant.touristFoodInfo.row
-        Log.d("mobileApp", "$restaurant")
 
-        for (i in 0 until restaurant.size) { //음식점점 데이터 각각 주소를 가져와서 geocoder로 위도, 도 정보를 얻어와 지도에 마커로 표시
+        for (i in 0 until restaurant.size) { //음식점 데이터 각각 주소를 가져와서 geocoder로 위도, 도 정보를 얻어와 지도에 마커로 표시
             if(restaurant[i].ADDR.equals("")){ //주소에 대한 정보가 없는 장소는 배제
                 continue
             }
 
-            val loc = geocoder(restaurant[i].ADDR)
-
             val markerOp = MarkerOptions()
             markerOp.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_ORANGE)) //음식점은 주황색 마커로 표시
-            markerOp.position(LatLng(loc[0], loc[1]))
+            markerOp.position(LatLng(MyApplication.restaurant_loc_lat[i], MyApplication.restaurant_loc_lon[i]))
             markerOp.title(restaurant[i].SISULNAME)
 
             googleMap?.addMarker(markerOp)
-
         }
 
         val toilet = MyApplication.result_toilet.viewAmenitiesInfo.row
-        Log.d("mobileApp", "$toilet")
 
         for (i in 0 until toilet.size) { //화장실 데이터 각각 주소를 가져와서 geocoder로 위도, 경도 정보를 얻어와 지도에 마커로 표시
             if(toilet[i].ADDR.equals("")){ //주소에 대한 정보가 없는 장소는 배제
                 continue
             }
 
-            val loc = geocoder(toilet[i].ADDR)
-
             val markerOp = MarkerOptions()
             markerOp.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_YELLOW)) //화장실은 노란색 마커로 표시
-            markerOp.position(LatLng(loc[0], loc[1]))
+            markerOp.position(LatLng(MyApplication.toilet_loc_lat[i], MyApplication.toilet_loc_lon[i]))
             markerOp.title(toilet[i].SISULNAME)
 
             googleMap?.addMarker(markerOp)
 
         }
 
-        /*
         val charging = MyApplication.result_charging.tbElecWheelChrCharge.row
-        Log.d("mobileApp", "$charging")
-
         for (i in 0 until charging.size) { //충전소 데이터 각각 위도와 경도를 가져와서 지도에 마커로 표시
             if(charging[i].LATITUDE.equals("") || charging[i].LONGITUDE.equals("")){ //위도나 경도에 대한 정보가 없는 장소는 배제
                 continue
             }
-
             val latitude = (charging[i].LATITUDE).toDouble()
             val longitude = (charging[i].LONGITUDE).toDouble()
-
             val markerOp = MarkerOptions()
             markerOp.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN)) //충전소는 초록색 마커로 표시
             markerOp.position(LatLng(latitude, longitude))
             markerOp.title(charging[i].FCLTYNM)
-
             googleMap?.addMarker(markerOp)
         }
-
-         */
 
         /*
         providerClient = LocationServices.getFusedLocationProviderClient(context as MainActivity)
@@ -221,7 +174,6 @@ class HomeFragment : Fragment(), OnMapReadyCallback {
             .addConnectionCallbacks(this)
             .addOnConnectionFailedListener(this)
             .build()
-
         val requestPermissionLauncher = registerForActivityResult(ActivityResultContracts.RequestMultiplePermissions()){
             if(it.all{ permission -> permission.value == true}){
                 apiClient.connect()
@@ -229,7 +181,6 @@ class HomeFragment : Fragment(), OnMapReadyCallback {
                 Toast.makeText(context as MainActivity, "권한 거부..", Toast.LENGTH_LONG).show()
             }
         }
-
         if(ContextCompat.checkSelfPermission(context as MainActivity, Manifest.permission.ACCESS_FINE_LOCATION) !== PackageManager.PERMISSION_GRANTED
             || ContextCompat.checkSelfPermission(context as MainActivity, Manifest.permission.WRITE_EXTERNAL_STORAGE) !== PackageManager.PERMISSION_GRANTED
             || ContextCompat.checkSelfPermission(context as MainActivity, Manifest.permission.ACCESS_NETWORK_STATE) !== PackageManager.PERMISSION_GRANTED){
@@ -243,7 +194,6 @@ class HomeFragment : Fragment(), OnMapReadyCallback {
         else{
             apiClient.connect()
         }
-
          */
     }
 
