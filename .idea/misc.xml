@@ -12,6 +12,7 @@
         <entry key="..\:/Users/rihyu/Documents/AndroidStudioProjects/TripWithWheel/app/src/main/res/layout/activity_schedule.xml" value="0.13722826086956522" />
         <entry key="..\:/Users/rihyu/Documents/AndroidStudioProjects/TripWithWheel/app/src/main/res/layout/activity_setting.xml" value="0.13722826086956522" />
         <entry key="..\:/Users/rihyu/Documents/AndroidStudioProjects/TripWithWheel/app/src/main/res/layout/activity_signup.xml" value="0.13722826086956522" />
+        <entry key="..\:/Users/rihyu/Documents/AndroidStudioProjects/TripWithWheel/app/src/main/res/layout/activity_splash.xml" value="0.15896739130434784" />
         <entry key="..\:/Users/rihyu/Documents/AndroidStudioProjects/TripWithWheel/app/src/main/res/layout/activity_write_review.xml" value="0.13722826086956522" />
         <entry key="..\:/Users/rihyu/Documents/AndroidStudioProjects/TripWithWheel/app/src/main/res/layout/fragment_home.xml" value="0.25" />
         <entry key="..\:/Users/rihyu/Documents/AndroidStudioProjects/TripWithWheel/app/src/main/res/layout/fragment_list.xml" value="0.1" />
@@ -24,6 +25,7 @@
         <entry key="..\:/Users/rihyu/Documents/AndroidStudioProjects/TripWithWheel/app/src/main/res/layout/fragment_settings.xml" value="0.13722826086956522" />
         <entry key="..\:/Users/rihyu/Documents/AndroidStudioProjects/TripWithWheel/app/src/main/res/layout/item_main.xml" value="0.1408514492753623" />
         <entry key="..\:/Users/rihyu/Documents/AndroidStudioProjects/TripWithWheel/app/src/main/res/layout/item_recyclerview.xml" value="0.176" />
+        <entry key="..\:/Users/rihyu/Documents/AndroidStudioProjects/TripWithWheel/app/src/main/res/layout/item_review_recyclerview.xml" value="0.1125" />
         <entry key="..\:/Users/rihyu/Documents/AndroidStudioProjects/TripWithWheel/app/src/main/res/menu/bottom_navigation_menu.xml" value="0.25364583333333335" />
       </map>
     </option>

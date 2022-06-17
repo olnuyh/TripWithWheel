@@ -26,15 +26,11 @@
             android:exported="false"/>
 
         <meta-data
-            android:name="com.kakao.sdk.AppKey"
-            android:value="b24008d58fe7744b00916fefa69494b1" />
-        <meta-data
             android:name="com.google.android.maps.v2.API_KEY"
             android:value="AIzaSyD9CypA1WOSWqV6tlQENIEK_zDBGHt9MZI" />
         <meta-data
             android:name="com.google.android.gms.version"
             android:value="@integer/google_play_services_version" />
-
         <activity
             android:name=".SignupActivity"
             android:exported="false" />
@@ -50,7 +46,8 @@
         </activity>
         <activity
             android:name=".LoginActivity"
-            android:exported="true" />
+            android:exported="true"
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar"/>
         <activity
             android:name=".MainActivity"
             android:exported="true" />
