@@ -6,10 +6,7 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
 import androidx.core.content.ContextCompat
-import java.util.concurrent.Executor
-import java.util.concurrent.Executors
-import java.util.concurrent.ScheduledExecutorService
-import java.util.concurrent.TimeUnit
+import java.util.concurrent.*
 import kotlin.concurrent.thread
 
 class SplashActivity : AppCompatActivity() {
@@ -17,15 +14,15 @@ class SplashActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         //setContentView(R.layout.activity_splash)
 
+        val service = Intent(applicationContext, AddressIntentService::class.java)
+        startService(service)
+
         val backgroundExecutor : ScheduledExecutorService = Executors.newSingleThreadScheduledExecutor()
         val mainExecutor : Executor = ContextCompat.getMainExecutor(this)
         backgroundExecutor.schedule({
             mainExecutor.execute{
-                val intent = Intent(applicationContext, AddressIntentService::class.java)
-                startService(intent)
-
-                val intent2 = Intent(applicationContext, LoginActivity::class.java)
-                startActivity(intent2)
+                val intent = Intent(applicationContext, LoginActivity::class.java)
+                startActivity(intent)
                 finish()
             }
         }, 2, TimeUnit.SECONDS)

@@ -22,8 +22,10 @@
         <uses-library
             android:name="org.apache.http.legacy"
             android:required="false" />
-        <service android:name=".AddressIntentService"
-            android:exported="false"/>
+
+        <service
+            android:name=".AddressIntentService"
+            android:exported="false" />
 
         <meta-data
             android:name="com.google.android.maps.v2.API_KEY"
@@ -31,6 +33,7 @@
         <meta-data
             android:name="com.google.android.gms.version"
             android:value="@integer/google_play_services_version" />
+
         <activity
             android:name=".SignupActivity"
             android:exported="false" />
@@ -47,7 +50,7 @@
         <activity
             android:name=".LoginActivity"
             android:exported="true"
-            android:theme="@style/Theme.AppCompat.Light.NoActionBar"/>
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
         <activity
             android:name=".MainActivity"
             android:exported="true" />
