@@ -42,11 +42,11 @@ class AddressIntentService : IntentService("AddressIntentService") {
             if (spot[i].ADDRESS.equals("")) {
                 MyApplication.spot_loc_lat.add(0.0)
                 MyApplication.spot_loc_lon.add(0.0)
-                continue
+            }else{
+                val loc = geocoder(spot[i].ADDRESS)
+                MyApplication.spot_loc_lat.add(loc[0])
+                MyApplication.spot_loc_lon.add(loc[1])
             }
-            val loc = geocoder(spot[i].ADDRESS)
-            MyApplication.spot_loc_lat.add(loc[0])
-            MyApplication.spot_loc_lon.add(loc[1])
         }
 
         val restaurant = MyApplication.result_restaurant.touristFoodInfo.row

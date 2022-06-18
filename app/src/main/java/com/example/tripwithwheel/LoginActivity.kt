@@ -1,6 +1,8 @@
     package com.example.tripwithwheel
 
 import android.content.Intent
+import android.content.SharedPreferences
+import android.graphics.Paint
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
@@ -10,7 +12,7 @@ import com.kakao.sdk.auth.model.OAuthToken
 import com.kakao.sdk.common.util.Utility
 import com.kakao.sdk.user.UserApiClient
 
-    class LoginActivity : AppCompatActivity() {
+class LoginActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         //setContentView(R.layout.activity_login)
@@ -23,9 +25,6 @@ import com.kakao.sdk.user.UserApiClient
 
             MyApplication.auth.signInWithEmailAndPassword(email, password)
                 .addOnCompleteListener(this) { task ->
-                    //binding.loginId.text.clear()
-                    //binding.loginPwd.text.clear()
-
                     if(task.isSuccessful){
                         if(MyApplication.checkAuth()){
                             MyApplication.email = email

@@ -22,5 +22,6 @@ class SpotAdapter(val context : Context, val datas : MutableList<Row>?) : Recycl
         binding.name.text = model.POST_SJ
         binding.address.text = model.ADDRESS
         binding.tel.text = model.CMMN_TELNO
+        binding.info.text = model.BF_DESC
     }
 }

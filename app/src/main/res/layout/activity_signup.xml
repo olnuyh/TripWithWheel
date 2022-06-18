@@ -10,17 +10,23 @@
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="회원가입"
-        android:textSize="55dp"
-        android:layout_marginTop="70dp"
+        android:text="SIGNUP"
+        android:textSize="50dp"
+        android:textColor="@color/sub"
+        android:fontFamily="@font/large_font"
+        android:layout_marginTop="50dp"
         android:gravity="center"/>
 
     <EditText
         android:id="@+id/signupId"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="아이디"
+        android:hint="ID"
+        android:fontFamily="@font/medium_font"
         android:textSize="20dp"
+        android:background="@drawable/edittext_radius"
+        android:backgroundTint="@color/grey"
+        android:padding="10dp"
         android:layout_marginTop="50dp"
         android:layout_marginLeft="20dp"
         android:layout_marginRight="20dp"/>
@@ -29,8 +35,36 @@
         android:id="@+id/signupPwd"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="비밀번호"
+        android:hint="Password"
+        android:fontFamily="@font/medium_font"
         android:textSize="20dp"
+        android:background="@drawable/edittext_radius"
+        android:backgroundTint="@color/grey"
+        android:padding="10dp"
+        android:inputType="numberPassword"
+        android:layout_marginTop="25dp"
+        android:layout_marginLeft="20dp"
+        android:layout_marginRight="20dp"/>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_marginTop="40dp"
+        android:layout_marginLeft="20dp"
+        android:layout_marginRight="20dp"
+        android:background="@color/dark_grey"/>
+
+    <EditText
+        android:id="@+id/nickName"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Nickname"
+        android:fontFamily="@font/medium_font"
+        android:textSize="20dp"
+        android:background="@drawable/edittext_radius"
+        android:backgroundTint="@color/grey"
+        android:padding="10dp"
+        android:inputType="numberPassword"
         android:layout_marginTop="40dp"
         android:layout_marginLeft="20dp"
         android:layout_marginRight="20dp"/>
@@ -39,8 +73,11 @@
         android:id="@+id/signupBtn"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="회원가입하기"
-        android:textSize="15dp"
+        android:text="회원가입"
+        android:textSize="20dp"
+        android:textColor="@color/white"
+        android:background="@drawable/button_radius"
+        android:fontFamily="@font/medium_font"
         android:layout_marginTop="50dp"
         android:layout_marginLeft="20dp"
         android:layout_marginRight="20dp"/>

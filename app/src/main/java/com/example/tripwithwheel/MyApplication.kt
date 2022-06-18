@@ -8,7 +8,10 @@ import androidx.multidex.MultiDexApplication
 import com.google.android.gms.maps.model.LatLng
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.ktx.auth
+import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.ktx.Firebase
+import com.google.firebase.storage.FirebaseStorage
+import com.google.firebase.storage.ktx.storage
 import com.kakao.sdk.common.KakaoSdk
 import retrofit2.Call
 import retrofit2.Callback
@@ -22,6 +25,8 @@ class MyApplication : MultiDexApplication() {
         var networkServiceRestaurant: NetworkService
         var networkServiceToilet: NetworkService
         var networkServiceCharging: NetworkService
+        lateinit var db : FirebaseFirestore
+        lateinit var storage : FirebaseStorage
         lateinit var result_spot: SpotModel
         lateinit var result_restaurant: RestaurantModel
         lateinit var result_toilet: ToiletModel
@@ -33,6 +38,7 @@ class MyApplication : MultiDexApplication() {
         var restaurant_loc_lon : MutableList<Double> = mutableListOf()
         var toilet_loc_lat : MutableList<Double> = mutableListOf()
         var toilet_loc_lon : MutableList<Double> = mutableListOf()
+        var markerName : String = ""
 
         val retrofit: Retrofit
             get() = Retrofit.Builder()
@@ -134,5 +140,8 @@ class MyApplication : MultiDexApplication() {
             super.onCreate()
             auth = Firebase.auth
             KakaoSdk.init(this, "b24008d58fe7744b00916fefa69494b1")
+
+            db = FirebaseFirestore.getInstance()
+            storage = Firebase.storage
         }
     }

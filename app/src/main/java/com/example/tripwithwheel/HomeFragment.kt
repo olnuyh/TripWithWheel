@@ -1,32 +1,39 @@
 package com.example.tripwithwheel
 
 import android.Manifest
+import android.app.DatePickerDialog
+import android.content.Context
+import android.content.Intent
 import android.content.pm.PackageManager
-import android.location.Address
-import android.location.Geocoder
 import android.location.Location
 import android.os.Bundle
+import android.text.method.ScrollingMovementMethod
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.DatePicker
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
+import com.example.tripwithwheel.databinding.ActivityReadReviewBinding
 import com.example.tripwithwheel.databinding.FragmentHomeBinding
 import com.google.android.gms.common.ConnectionResult
+import com.google.android.gms.common.api.GoogleApiClient
+import com.google.android.gms.location.FusedLocationProviderClient
+import com.google.android.gms.location.LocationServices
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
+import com.google.android.gms.maps.GoogleMap.OnMapClickListener
 import com.google.android.gms.maps.OnMapReadyCallback
-import com.google.android.gms.maps.model.BitmapDescriptorFactory
-import com.google.android.gms.maps.model.CameraPosition
-import com.google.android.gms.maps.model.LatLng
-import com.google.android.gms.maps.model.MarkerOptions
+import com.google.android.gms.maps.model.*
 import com.google.android.gms.tasks.OnSuccessListener
-import retrofit2.Call
-import retrofit2.Callback
-import retrofit2.Response
+import java.io.BufferedReader
+import java.io.File
+import java.io.OutputStreamWriter
+import java.util.*
+
 
 // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
 private const val ARG_PARAM1 = "param1"
@@ -37,11 +44,19 @@ private const val ARG_PARAM2 = "param2"
  * Use the [HomeFragment.newInstance] factory method to
  * create an instance of this fragment.
  */
-class HomeFragment : Fragment(), OnMapReadyCallback {
+
+class HomeFragment : Fragment(), OnMapReadyCallback, GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener {
     private var param1: String? = null
     private var param2: String? = null
     private var googleMap : GoogleMap? = null
     private lateinit var binding : FragmentHomeBinding
+    lateinit var spot : List<Row>
+    lateinit var restaurant : List<Row2>
+    lateinit var toilet : List<Row3>
+    lateinit var charging : List<Row4>
+    lateinit var apiClient : GoogleApiClient
+    lateinit var providerClient : FusedLocationProviderClient
+    lateinit var mainActivity : MainActivity
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -49,6 +64,11 @@ class HomeFragment : Fragment(), OnMapReadyCallback {
             param1 = it.getString(ARG_PARAM1)
             param2 = it.getString(ARG_PARAM2)
         }
+    }
+
+    override fun onAttach(context: Context) {
+        super.onAttach(context)
+        mainActivity = context as MainActivity
     }
 
     override fun onCreateView(
@@ -62,33 +82,114 @@ class HomeFragment : Fragment(), OnMapReadyCallback {
         binding.mapView.onResume()
         binding.mapView.getMapAsync(this)
 
-        return binding.root
-    }
+        binding.cardInfo.movementMethod = ScrollingMovementMethod()
 
-    /*
-    private fun moveMap(latitude : Double, longitude : Double){
-        val latLng = LatLng(latitude, longitude)
-        val position : CameraPosition = CameraPosition.Builder()
-            .target(latLng)
-            .zoom(16f)
+        providerClient = LocationServices.getFusedLocationProviderClient(mainActivity)
+        apiClient = GoogleApiClient.Builder(requireActivity())
+            .addApi(LocationServices.API)
+            .addConnectionCallbacks(this)
+            .addOnConnectionFailedListener(this)
             .build()
-        googleMap!!.moveCamera(CameraUpdateFactory.newCameraPosition(position))
-        val markerOp = MarkerOptions()
-        markerOp.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_AZURE))
-        markerOp.position(latLng)
-        markerOp.title("My Location")
-        googleMap?.addMarker(markerOp)
-    }
-    override fun onConnected(p0: Bundle?) {
-        if(ContextCompat.checkSelfPermission(context as MainActivity, Manifest.permission.ACCESS_FINE_LOCATION) === PackageManager.PERMISSION_GRANTED){
+
+        val requestPermissionLauncher = registerForActivityResult(ActivityResultContracts.RequestMultiplePermissions()){
+            if(it.all{permission -> permission.value == true}){
+                apiClient.connect()
+            }else{
+                Toast.makeText(mainActivity, "권한 거부..", Toast.LENGTH_LONG).show()
+            }
+        }
+
+        if(ContextCompat.checkSelfPermission(mainActivity, Manifest.permission.ACCESS_FINE_LOCATION) !== PackageManager.PERMISSION_GRANTED
+            || ContextCompat.checkSelfPermission(mainActivity, Manifest.permission.WRITE_EXTERNAL_STORAGE) !== PackageManager.PERMISSION_GRANTED
+            || ContextCompat.checkSelfPermission(mainActivity, Manifest.permission.ACCESS_NETWORK_STATE) !== PackageManager.PERMISSION_GRANTED) {
+            requestPermissionLauncher.launch(
+                arrayOf(
+                    Manifest.permission.ACCESS_FINE_LOCATION,
+                    Manifest.permission.WRITE_EXTERNAL_STORAGE,
+                    Manifest.permission.ACCESS_NETWORK_STATE
+                )
+            )
+        }else{
+            apiClient.connect()
+        }
+
+        binding.curFab.setOnClickListener {
             providerClient.lastLocation.addOnSuccessListener(
-                context as MainActivity,
+                mainActivity,
                 object : OnSuccessListener<Location> {
                     override fun onSuccess(p0: Location?) {
                         p0?.let{
                             val latitude = p0.latitude
                             val longitude = p0.longitude
-                            Log.d("mobileApp", "lat: $latitude, lng: $longitude")
+                            val position : CameraPosition = CameraPosition.Builder()
+                                .target(LatLng(latitude,longitude))
+                                .zoom(16F)
+                                .build()
+                            googleMap!!.moveCamera(CameraUpdateFactory.newCameraPosition(position))
+                        }
+                    }
+                }
+            )
+            apiClient.disconnect()
+            if(binding.cardView.visibility == View.VISIBLE){
+                binding.cardView.visibility = View.GONE
+            }
+        }
+
+        binding.cardToReview.setOnClickListener {
+            val intent = Intent(mainActivity, ReadReviewActivity::class.java)
+            startActivity(intent)
+        }
+
+        binding.cardToRegistration.setOnClickListener {
+            val calendar : Calendar = Calendar.getInstance()
+
+            DatePickerDialog(mainActivity,
+                object : DatePickerDialog.OnDateSetListener{
+                    override fun onDateSet(p0: DatePicker?, p1: Int, p2: Int, p3: Int) {
+                        val filename = p1.toString() + p2.toString() + p3.toString()
+                        val file = File(mainActivity.filesDir, "fileName.txt")
+                        val writeStream: OutputStreamWriter = file.writer()
+                        writeStream.write(MyApplication.markerName)
+                        writeStream.flush()
+
+                        val readStream : BufferedReader = file.reader().buffered()
+                        readStream.forEachLine {
+                            Log.d("mobileApp", "$it")
+                        }
+
+                    }
+                },
+            calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH), calendar.get(Calendar.DATE)).show()
+        }
+
+        return binding.root
+    }
+
+    private fun moveMap(latitude : Double, longitude : Double){
+        val latLng = LatLng(latitude, longitude)
+        val position : CameraPosition = CameraPosition.Builder()
+            .target(latLng)
+            .zoom(16F)
+            .build()
+        googleMap!!.moveCamera(CameraUpdateFactory.newCameraPosition(position))
+
+        val markerOp = MarkerOptions()
+        markerOp.icon(BitmapDescriptorFactory.fromResource(R.drawable.curloc))
+        markerOp.position(latLng)
+        markerOp.title("cur")
+        googleMap?.addMarker(markerOp)
+    }
+
+    override fun onConnected(p0: Bundle?) {
+        if(ContextCompat.checkSelfPermission(mainActivity, Manifest.permission.ACCESS_FINE_LOCATION) === PackageManager.PERMISSION_GRANTED){
+            providerClient.lastLocation.addOnSuccessListener(
+                mainActivity,
+                object : OnSuccessListener<Location> {
+                    override fun onSuccess(p0: Location?) {
+                        p0?.let{
+                            val latitude = p0.latitude
+                            val longitude = p0.longitude
                             moveMap(latitude, longitude)
                         }
                     }
@@ -97,16 +198,19 @@ class HomeFragment : Fragment(), OnMapReadyCallback {
             apiClient.disconnect()
         }
     }
+
     override fun onConnectionFailed(p0: ConnectionResult) {
     }
+
     override fun onConnectionSuspended(p0: Int) {
     }
-     */
+
+
 
     override fun onMapReady(p0: GoogleMap?) {
         googleMap = p0
 
-        val spot = MyApplication.result_spot.TbVwAttractions.row
+        spot = MyApplication.result_spot.TbVwAttractions.row
 
         for (i in 0 until spot.size) { //관광지 데이터 각각 주소를 가져와서 geocoder로 위도, 경도 정보를 얻어와 지도에 마커로 표시
             if(spot[i].ADDRESS.equals("")){ //주소에 대한 정보가 없는 장소는 배제
@@ -122,7 +226,7 @@ class HomeFragment : Fragment(), OnMapReadyCallback {
 
         }
 
-        val restaurant = MyApplication.result_restaurant.touristFoodInfo.row
+        restaurant = MyApplication.result_restaurant.touristFoodInfo.row
 
         for (i in 0 until restaurant.size) { //음식점 데이터 각각 주소를 가져와서 geocoder로 위도, 도 정보를 얻어와 지도에 마커로 표시
             if(restaurant[i].ADDR.equals("")){ //주소에 대한 정보가 없는 장소는 배제
@@ -137,7 +241,7 @@ class HomeFragment : Fragment(), OnMapReadyCallback {
             googleMap?.addMarker(markerOp)
         }
 
-        val toilet = MyApplication.result_toilet.viewAmenitiesInfo.row
+        toilet = MyApplication.result_toilet.viewAmenitiesInfo.row
 
         for (i in 0 until toilet.size) { //화장실 데이터 각각 주소를 가져와서 geocoder로 위도, 경도 정보를 얻어와 지도에 마커로 표시
             if(toilet[i].ADDR.equals("")){ //주소에 대한 정보가 없는 장소는 배제
@@ -153,7 +257,8 @@ class HomeFragment : Fragment(), OnMapReadyCallback {
 
         }
 
-        val charging = MyApplication.result_charging.tbElecWheelChrCharge.row
+        charging = MyApplication.result_charging.tbElecWheelChrCharge.row
+
         for (i in 0 until charging.size) { //충전소 데이터 각각 위도와 경도를 가져와서 지도에 마커로 표시
             if(charging[i].LATITUDE.equals("") || charging[i].LONGITUDE.equals("")){ //위도나 경도에 대한 정보가 없는 장소는 배제
                 continue
@@ -167,34 +272,49 @@ class HomeFragment : Fragment(), OnMapReadyCallback {
             googleMap?.addMarker(markerOp)
         }
 
-        /*
-        providerClient = LocationServices.getFusedLocationProviderClient(context as MainActivity)
-        apiClient = GoogleApiClient.Builder(context as MainActivity)
-            .addApi(LocationServices.API)
-            .addConnectionCallbacks(this)
-            .addOnConnectionFailedListener(this)
-            .build()
-        val requestPermissionLauncher = registerForActivityResult(ActivityResultContracts.RequestMultiplePermissions()){
-            if(it.all{ permission -> permission.value == true}){
-                apiClient.connect()
-            }else{
-                Toast.makeText(context as MainActivity, "권한 거부..", Toast.LENGTH_LONG).show()
+        p0!!.setOnMarkerClickListener(object : GoogleMap.OnMarkerClickListener{
+            override fun onMarkerClick(p0: Marker?): Boolean {
+                if(!p0!!.title.equals("cur")){
+                    binding.cardView.visibility = View.VISIBLE
+                    binding.cardName.text = p0?.title
+
+                    when(p0!!.id.substring(1).toInt() / 5){
+                        0 ->{
+                            val cardMarker = spot.find{ it.POST_SJ.equals(p0?.title)}
+                            binding.cardAddr.text = cardMarker!!.ADDRESS
+                            binding.cardTel.text = cardMarker!!.CMMN_TELNO
+                            binding.cardInfo.text = cardMarker!!.BF_DESC
+                            MyApplication.markerName = cardMarker!!.POST_SJ
+                        }
+                        1 ->{
+                            val cardMarker = restaurant.find{ it.SISULNAME.equals(p0?.title)}
+                            binding.cardAddr.text = cardMarker!!.ADDR
+                            binding.cardTel.text = cardMarker!!.TEL
+                            MyApplication.markerName = cardMarker!!.SISULNAME
+                        }
+                        2 ->{
+                            val cardMarker = toilet.find{ it.SISULNAME.equals(p0?.title)}
+                            binding.cardAddr.text = cardMarker!!.ADDR
+                            binding.cardTel.text = cardMarker!!.TEL
+                            MyApplication.markerName = cardMarker!!.SISULNAME
+                        }
+                        3 ->{
+                            val cardMarker = charging.find{ it.FCLTYNM.equals(p0?.title)}
+                            binding.cardAddr.text = cardMarker!!.RDNMADR
+                            binding.cardTel.text = cardMarker!!.INSTITUTIONPHONENUMBER
+                            MyApplication.markerName = cardMarker!!.FCLTYNM
+                        }
+                    }
+                }
+                return true
             }
-        }
-        if(ContextCompat.checkSelfPermission(context as MainActivity, Manifest.permission.ACCESS_FINE_LOCATION) !== PackageManager.PERMISSION_GRANTED
-            || ContextCompat.checkSelfPermission(context as MainActivity, Manifest.permission.WRITE_EXTERNAL_STORAGE) !== PackageManager.PERMISSION_GRANTED
-            || ContextCompat.checkSelfPermission(context as MainActivity, Manifest.permission.ACCESS_NETWORK_STATE) !== PackageManager.PERMISSION_GRANTED){
-            requestPermissionLauncher.launch(
-                arrayOf(Manifest.permission.ACCESS_FINE_LOCATION,
-                    Manifest.permission.WRITE_EXTERNAL_STORAGE,
-                    Manifest.permission.ACCESS_NETWORK_STATE
-                )
-            )
-        }
-        else{
-            apiClient.connect()
-        }
-         */
+        })
+
+        p0!!.setOnMapClickListener (object : GoogleMap.OnMapClickListener {
+            override fun onMapClick(latLng: LatLng) {
+                binding.cardView.visibility = View.GONE
+            }
+        })
     }
 
     companion object {

@@ -1,5 +1,6 @@
 package com.example.tripwithwheel
 
+import android.content.SharedPreferences
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.widget.Toast
@@ -16,6 +17,7 @@ class SignupActivity : AppCompatActivity() {
         binding.signupBtn.setOnClickListener {
             val email = binding.signupId.text.toString()
             val password = binding.signupPwd.text.toString()
+            //val nickname = binding.nickName.text.toString()
 
             MyApplication.auth.createUserWithEmailAndPassword(email, password) //사용자가 입력한 이메일과 비밀번호를 기반으로 회원가입
                 .addOnCompleteListener(this) { task ->

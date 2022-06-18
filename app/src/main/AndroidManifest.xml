@@ -25,7 +25,7 @@
 
         <service
             android:name=".AddressIntentService"
-            android:exported="false" />
+            android:exported="true" />
 
         <meta-data
             android:name="com.google.android.maps.v2.API_KEY"
@@ -36,6 +36,13 @@
 
         <activity
             android:name=".SignupActivity"
+            android:exported="false"
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar"/>
+        <activity
+            android:name=".ReadReviewActivity"
+            android:exported="false" />
+        <activity
+            android:name=".WriteReviewActivity"
             android:exported="false" />
         <activity
             android:name=".SplashActivity"
@@ -68,6 +75,14 @@
                     android:scheme="kakaob24008d58fe7744b00916fefa69494b1" />
             </intent-filter>
         </activity>
+        <provider
+            android:authorities="com.example.tripwithwheel.fileprovider"
+            android:name="androidx.core.content.FileProvider"
+            android:exported="false"
+            android:grantUriPermissions="true" >
+            <meta-data android:name="android.support.FILE_PROVIDER_PATHS"
+                android:resource="@xml/file_paths"/>
+        </provider>
     </application>
 
 </manifest>

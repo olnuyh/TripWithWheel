@@ -7,6 +7,7 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.tripwithwheel.databinding.FragmentListSpotBinding
 import retrofit2.Call
@@ -42,6 +43,7 @@ class ListSpotFragment : Fragment() {
         val binding = FragmentListSpotBinding.inflate(inflater, container, false)
         binding.spotRecyclerView.layoutManager = LinearLayoutManager(activity)
         binding.spotRecyclerView.adapter = SpotAdapter(activity as Context, MyApplication.result_spot.TbVwAttractions.row)
+        binding.spotRecyclerView.addItemDecoration(DividerItemDecoration(activity as Context, LinearLayoutManager.VERTICAL))
 
         return binding.root
     }

@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <PreferenceCategory
+        app:key="user"
+        app:title="사용자 설정">
+        <EditTextPreference
+            app:key="change_nickname"
+            app:title="닉네임 설정"/>
+    </PreferenceCategory>
+
+    <PreferenceCategory
+        app:key="etc"
+        app:title="기타 설정">
+        <SwitchPreference
+            app:key="change_message"
+            app:title="메시지 알림"/>
+        <ListPreference
+            app:key="change_color"
+            app:title="배경색 선택"
+            app:entries="@array/back_color"
+            app:entryValues="@array/back_color_value">
+        </ListPreference>
+        <SwitchPreference
+            app:key="change_mode"
+            app:title="모드 변경"/>
+    </PreferenceCategory>
+</PreferenceScreen>

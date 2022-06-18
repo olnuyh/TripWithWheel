@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="back_color">
+        <item>기본</item>
+        <item>노랑</item>
+        <item>연두</item>
+        <item>분홍</item>
+    </string-array>
+    <string-array name="back_color_value">
+        <item>#FFFFFF</item>
+        <item>#FAF4C0</item>
+        <item>#F6FFCC</item>
+        <item>#FFEBFE</item>
+    </string-array>
+</resources>

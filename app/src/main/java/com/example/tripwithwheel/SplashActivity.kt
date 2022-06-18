@@ -14,13 +14,13 @@ class SplashActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         //setContentView(R.layout.activity_splash)
 
-        val service = Intent(applicationContext, AddressIntentService::class.java)
-        startService(service)
-
         val backgroundExecutor : ScheduledExecutorService = Executors.newSingleThreadScheduledExecutor()
         val mainExecutor : Executor = ContextCompat.getMainExecutor(this)
         backgroundExecutor.schedule({
             mainExecutor.execute{
+                val service = Intent(applicationContext, AddressIntentService::class.java)
+                startService(service)
+
                 val intent = Intent(applicationContext, LoginActivity::class.java)
                 startActivity(intent)
                 finish()
