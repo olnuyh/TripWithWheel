@@ -6,10 +6,16 @@ import android.graphics.Color
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
+import android.view.Menu
+import android.view.MenuInflater
+import android.view.MenuItem
+import android.widget.Toast
+import androidx.core.app.ActivityCompat
 import androidx.fragment.app.Fragment
 import androidx.preference.Preference
 import androidx.preference.PreferenceManager
 import com.example.tripwithwheel.databinding.ActivityMainBinding
+import com.kakao.sdk.user.UserApiClient
 
 class MainActivity : AppCompatActivity(){
     lateinit var binding : ActivityMainBinding
@@ -32,6 +38,33 @@ class MainActivity : AppCompatActivity(){
             true
         }
         binding.navigation.selectedItemId = R.id.menu_home
+    }
+
+    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
+        menuInflater.inflate(R.menu.logout_menu, menu)
+        return super.onCreateOptionsMenu(menu)
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        if(item.itemId == R.id.menu_logout){
+            if(MyApplication.loginType.equals("firebase")){
+                MyApplication.auth.signOut()
+                MyApplication.email = null
+                Toast.makeText(this, "로그아웃 성공", Toast.LENGTH_SHORT).show()
+                finish()
+            }
+            else if(MyApplication.loginType.equals("kakao")){
+                UserApiClient.instance.logout{ error ->
+                    if(error != null){
+                        Toast.makeText(this, "로그아웃 실패", Toast.LENGTH_SHORT).show()
+                    }else{
+                        Toast.makeText(this, "로그아웃 성공", Toast.LENGTH_SHORT).show()
+                        finish()
+                    }
+                }
+            }
+        }
+        return super.onOptionsItemSelected(item)
     }
 
     private fun replaceFragment(fragment : Fragment){ //지정된 프래그먼트로 현재 프래그먼트 대체

@@ -29,6 +29,7 @@ class LoginActivity : AppCompatActivity() {
                         if(MyApplication.checkAuth()){
                             MyApplication.email = email
 
+                            MyApplication.loginType = "firebase"
                             val intent = Intent(this, MainActivity::class.java)
                             startActivity(intent)
                         }
@@ -59,6 +60,7 @@ class LoginActivity : AppCompatActivity() {
                     Log.e("mobileApp", "카카오계정으로 로그인 실패", error)
                 } else if (token != null) {
                     Log.i("mobileApp", "카카오계정으로 로그인 성공 ${token.accessToken}")
+
                     // 사용자 정보 요청 (기본)
                     UserApiClient.instance.me { user, error ->
                         if (error != null) {
@@ -66,6 +68,7 @@ class LoginActivity : AppCompatActivity() {
                         }
                         else if (user != null) {
                             Log.i("mobileApp", "사용자 정보 요청 성공 ${user.kakaoAccount?.email}")
+                            MyApplication.loginType = "kakao"
 
                             var scopes = mutableListOf<String>()
 
@@ -90,6 +93,7 @@ class LoginActivity : AppCompatActivity() {
                                             }
                                             else if(user != null){
                                                 MyApplication.email = user.kakaoAccount?.email.toString()
+                                                MyApplication.loginType = "kakao"
 
                                                 val intent = Intent(this, MainActivity::class.java)
                                                 startActivity(intent)

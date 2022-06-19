@@ -41,6 +41,7 @@ class MyApplication : MultiDexApplication() {
         var toilet_loc_lat : MutableList<Double> = mutableListOf()
         var toilet_loc_lon : MutableList<Double> = mutableListOf()
         var markerName : String = ""
+        var loginType : String = ""
 
         val retrofit: Retrofit
             get() = Retrofit.Builder()
