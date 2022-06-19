@@ -7,6 +7,7 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.tripwithwheel.databinding.FragmentListRestaurantBinding
 import com.example.tripwithwheel.databinding.FragmentListSpotBinding
@@ -43,6 +44,7 @@ class ListRestaurantFragment : Fragment() {
         val binding = FragmentListRestaurantBinding.inflate(inflater, container, false)
         binding.restaurantRecyclerView.layoutManager = LinearLayoutManager(activity)
         binding.restaurantRecyclerView.adapter = RestaurantAdapter(activity as Context, MyApplication.result_restaurant.touristFoodInfo.row)
+        binding.restaurantRecyclerView.addItemDecoration(DividerItemDecoration(activity as Context, LinearLayoutManager.VERTICAL))
 
         return binding.root
     }

@@ -22,5 +22,8 @@ class ChargingAdapter(val context : Context, val datas : MutableList<Row4>?) : R
         binding.name.text = model.FCLTYNM
         binding.address.text = model.RDNMADR
         binding.tel.text = model.INSTITUTIONPHONENUMBER
+        binding.info.text = "위치: " + model.INSTLLCDESC
+        val arr = arrayOf(model.WEEKDAYOPEROPENHHMM, model.WEEKDAYOPERCOLSEHHMM)
+        binding.etc.text = "운영시간: " + arr.joinToString(" ~ ")
     }
 }

@@ -7,6 +7,7 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.tripwithwheel.databinding.FragmentListChargingBinding
 import com.example.tripwithwheel.databinding.FragmentListSpotBinding
@@ -43,6 +44,7 @@ class ListChargingFragment : Fragment() {
         val binding = FragmentListChargingBinding.inflate(inflater, container, false)
         binding.chargingRecyclerView.layoutManager = LinearLayoutManager(activity)
         binding.chargingRecyclerView.adapter = ChargingAdapter(activity as Context, MyApplication.result_charging.tbElecWheelChrCharge.row)
+        binding.chargingRecyclerView.addItemDecoration(DividerItemDecoration(activity as Context, LinearLayoutManager.VERTICAL))
 
         return binding.root
     }

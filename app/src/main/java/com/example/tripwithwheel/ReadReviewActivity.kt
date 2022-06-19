@@ -51,7 +51,7 @@ class ReadReviewActivity : AppCompatActivity() {
                 val itemList = mutableListOf<ItemData>()
                 for(document in result){
                     val item = document.toObject(ItemData::class.java)
-                    item.docid = document.id
+                    item.docId = document.id
                     itemList.add(item)
                 }
                 binding.reviews.layoutManager = LinearLayoutManager(this)

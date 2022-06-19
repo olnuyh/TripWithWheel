@@ -7,7 +7,7 @@
     android:layout_height="wrap_content">
     <LinearLayout
         android:layout_width="0dp"
-        android:layout_height="200dp"
+        android:layout_height="180dp"
         android:layout_weight="1"
         android:orientation="vertical">
         <TextView
@@ -48,30 +48,16 @@
             android:textStyle="bold"
             android:textSize="15dp"
             android:textColor="@color/sub"/>
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text=""
+            android:id="@+id/etc"
+            android:scrollbars="vertical"
+            android:fontFamily="@font/small_font"
+            android:textStyle="bold"
+            android:textSize="15dp"
+            android:textColor="@color/sub"/>
     </LinearLayout>
 
-    <LinearLayout
-        android:layout_width="wrap_content"
-        android:layout_height="match_parent"
-        android:layout_marginLeft="10dp"
-        android:gravity="center"
-        android:orientation="vertical">
-        <ImageButton
-            android:layout_width="65dp"
-            android:layout_height="65dp"
-            android:text="리뷰"
-            android:src="@drawable/review"
-            android:background="@drawable/button2_radius"
-            android:id="@+id/readReviews"/>
-
-        <ImageButton
-            android:layout_width="60dp"
-            android:layout_height="60dp"
-            android:text="등록"
-            android:src="@drawable/calendar"
-            android:layout_marginTop="20dp"
-            android:background="@drawable/button2_radius"
-            android:scaleType="centerInside"
-            android:id="@+id/addSchedule"/>
-    </LinearLayout>
 </LinearLayout>

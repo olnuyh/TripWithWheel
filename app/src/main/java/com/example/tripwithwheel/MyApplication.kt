@@ -59,6 +59,7 @@ class MyApplication : MultiDexApplication() {
                         ) {
                             if (response.isSuccessful) {
                                 result_spot = response.body() as SpotModel
+                                Log.d("mobileApp", "$result_spot")
                             }
                         }
 

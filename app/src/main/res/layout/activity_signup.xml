@@ -27,7 +27,7 @@
         android:background="@drawable/edittext_radius"
         android:backgroundTint="@color/grey"
         android:padding="10dp"
-        android:layout_marginTop="50dp"
+        android:layout_marginTop="70dp"
         android:layout_marginLeft="20dp"
         android:layout_marginRight="20dp"/>
 
@@ -46,28 +46,7 @@
         android:layout_marginLeft="20dp"
         android:layout_marginRight="20dp"/>
 
-    <View
-        android:layout_width="match_parent"
-        android:layout_height="1dp"
-        android:layout_marginTop="40dp"
-        android:layout_marginLeft="20dp"
-        android:layout_marginRight="20dp"
-        android:background="@color/dark_grey"/>
 
-    <EditText
-        android:id="@+id/nickName"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:hint="Nickname"
-        android:fontFamily="@font/medium_font"
-        android:textSize="20dp"
-        android:background="@drawable/edittext_radius"
-        android:backgroundTint="@color/grey"
-        android:padding="10dp"
-        android:inputType="numberPassword"
-        android:layout_marginTop="40dp"
-        android:layout_marginLeft="20dp"
-        android:layout_marginRight="20dp"/>
 
     <Button
         android:id="@+id/signupBtn"
@@ -78,7 +57,7 @@
         android:textColor="@color/white"
         android:background="@drawable/button_radius"
         android:fontFamily="@font/medium_font"
-        android:layout_marginTop="50dp"
+        android:layout_marginTop="80dp"
         android:layout_marginLeft="20dp"
         android:layout_marginRight="20dp"/>
 </LinearLayout>

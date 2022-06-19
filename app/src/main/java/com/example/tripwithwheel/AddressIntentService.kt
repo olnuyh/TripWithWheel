@@ -42,23 +42,13 @@ class AddressIntentService : IntentService("AddressIntentService") {
         Log.d("mobileApp", "start")
         val spot = MyApplication.result_spot.TbVwAttractions.row
         for (i in 0 until spot.size) {
-            if (spot[i].ADDRESS.equals("")) {
-                MyApplication.spot_loc_lat.add(0.0)
-                MyApplication.spot_loc_lon.add(0.0)
-            }else{
-                val loc = geocoder(spot[i].ADDRESS)
-                MyApplication.spot_loc_lat.add(loc[0])
-                MyApplication.spot_loc_lon.add(loc[1])
-            }
+            val loc = geocoder(spot[i].ADDRESS)
+            MyApplication.spot_loc_lat.add(loc[0])
+            MyApplication.spot_loc_lon.add(loc[1])
         }
 
         val restaurant = MyApplication.result_restaurant.touristFoodInfo.row
         for (i in 0 until restaurant.size) {
-            if (restaurant[i].ADDR.equals("")) {
-                MyApplication.restaurant_loc_lat.add(0.0)
-                MyApplication.restaurant_loc_lon.add(0.0)
-                continue
-            }
             val loc = geocoder(restaurant[i].ADDR)
             MyApplication.restaurant_loc_lat.add(loc[0])
             MyApplication.restaurant_loc_lon.add(loc[1])
@@ -66,11 +56,6 @@ class AddressIntentService : IntentService("AddressIntentService") {
 
         val toilet = MyApplication.result_toilet.viewAmenitiesInfo.row
         for (i in 0 until toilet.size) {
-            if (toilet[i].ADDR.equals("")) {
-                MyApplication.toilet_loc_lat.add(0.0)
-                MyApplication.toilet_loc_lon.add(0.0)
-                continue
-            }
             val loc = geocoder(toilet[i].ADDR)
             MyApplication.toilet_loc_lat.add(loc[0])
             MyApplication.toilet_loc_lon.add(loc[1])

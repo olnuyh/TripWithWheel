@@ -1,8 +1,8 @@
 package com.example.tripwithwheel
 
 class ItemData {
-    var docid : String? = null
+    var docId : String? = null
     var email : String? = null
-    var contents : String? = null
+    var content : String? = null
     var date : String? = null
 }

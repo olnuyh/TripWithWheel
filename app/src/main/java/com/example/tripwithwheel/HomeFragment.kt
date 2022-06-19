@@ -149,6 +149,7 @@ class HomeFragment : Fragment(), OnMapReadyCallback, GoogleApiClient.ConnectionC
                     override fun onDateSet(p0: DatePicker?, p1: Int, p2: Int, p3: Int) {
                         val filename = p1.toString() + (p2 + 1).toString() + p3.toString()
                         val file = File(mainActivity.filesDir, "${MyApplication.email}_" + "$filename" +".txt")
+
                         if(!file.exists()){
                             val writeStream: OutputStreamWriter = file.writer()
                             writeStream.write(MyApplication.markerName)
@@ -212,10 +213,6 @@ class HomeFragment : Fragment(), OnMapReadyCallback, GoogleApiClient.ConnectionC
         spot = MyApplication.result_spot.TbVwAttractions.row
 
         for (i in 0 until spot.size) { //관광지 데이터 각각 주소를 가져와서 geocoder로 위도, 경도 정보를 얻어와 지도에 마커로 표시
-            if(spot[i].ADDRESS.equals("")){ //주소에 대한 정보가 없는 장소는 배제
-                continue
-            }
-
             val markerOp = MarkerOptions()
             markerOp.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED)) //관광지는 빨간색 마커로 표시
             markerOp.position(LatLng(MyApplication.spot_loc_lat[i], MyApplication.spot_loc_lon[i]))
@@ -228,10 +225,6 @@ class HomeFragment : Fragment(), OnMapReadyCallback, GoogleApiClient.ConnectionC
         restaurant = MyApplication.result_restaurant.touristFoodInfo.row
 
         for (i in 0 until restaurant.size) { //음식점 데이터 각각 주소를 가져와서 geocoder로 위도, 도 정보를 얻어와 지도에 마커로 표시
-            if(restaurant[i].ADDR.equals("")){ //주소에 대한 정보가 없는 장소는 배제
-                continue
-            }
-
             val markerOp = MarkerOptions()
             markerOp.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_ORANGE)) //음식점은 주황색 마커로 표시
             markerOp.position(LatLng(MyApplication.restaurant_loc_lat[i], MyApplication.restaurant_loc_lon[i]))
@@ -243,10 +236,6 @@ class HomeFragment : Fragment(), OnMapReadyCallback, GoogleApiClient.ConnectionC
         toilet = MyApplication.result_toilet.viewAmenitiesInfo.row
 
         for (i in 0 until toilet.size) { //화장실 데이터 각각 주소를 가져와서 geocoder로 위도, 경도 정보를 얻어와 지도에 마커로 표시
-            if(toilet[i].ADDR.equals("")){ //주소에 대한 정보가 없는 장소는 배제
-                continue
-            }
-
             val markerOp = MarkerOptions()
             markerOp.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_YELLOW)) //화장실은 노란색 마커로 표시
             markerOp.position(LatLng(MyApplication.toilet_loc_lat[i], MyApplication.toilet_loc_lon[i]))
@@ -259,9 +248,6 @@ class HomeFragment : Fragment(), OnMapReadyCallback, GoogleApiClient.ConnectionC
         charging = MyApplication.result_charging.tbElecWheelChrCharge.row
 
         for (i in 0 until charging.size) { //충전소 데이터 각각 위도와 경도를 가져와서 지도에 마커로 표시
-            if(charging[i].LATITUDE.equals("") || charging[i].LONGITUDE.equals("")){ //위도나 경도에 대한 정보가 없는 장소는 배제
-                continue
-            }
             val latitude = (charging[i].LATITUDE).toDouble()
             val longitude = (charging[i].LONGITUDE).toDouble()
             val markerOp = MarkerOptions()
@@ -277,33 +263,69 @@ class HomeFragment : Fragment(), OnMapReadyCallback, GoogleApiClient.ConnectionC
                     binding.cardView.visibility = View.VISIBLE
                     binding.cardName.text = p0?.title
 
-                    when(p0!!.id.substring(1).toInt() / 5){
+                    when(p0!!.id.substring(1).toInt() / 7){
                         0 ->{
                             val cardMarker = spot.find{ it.POST_SJ.equals(p0?.title)}
                             binding.cardAddr.text = cardMarker!!.ADDRESS
                             binding.cardTel.text = cardMarker!!.CMMN_TELNO
                             binding.cardInfo.text = cardMarker!!.BF_DESC
+                            binding.cardEtc.text = ""
                             MyApplication.markerName = cardMarker!!.POST_SJ
                         }
                         1 ->{
                             val cardMarker = restaurant.find{ it.SISULNAME.equals(p0?.title)}
                             binding.cardAddr.text = cardMarker!!.ADDR
                             binding.cardTel.text = cardMarker!!.TEL
-                            binding.cardInfo.text = ""
+
+                            var parking = ""
+                            var toilet = ""
+
+                            if(cardMarker!!.ST2.equals("Y")){
+                                parking = "장애인 전용 주차구역 O"
+                            }else{
+                                parking = "장애인 전용 주차구역 X"
+                            }
+
+                            if(cardMarker!!.ST5.equals("Y")){
+                                toilet = "장애인 화장실 O"
+                            }else{
+                                toilet = "장애인 화장실 X"
+                            }
+
+                            binding.cardInfo.text = parking
+                            binding.cardEtc.text = toilet
                             MyApplication.markerName = cardMarker!!.SISULNAME
                         }
                         2 ->{
                             val cardMarker = toilet.find{ it.SISULNAME.equals(p0?.title)}
                             binding.cardAddr.text = cardMarker!!.ADDR
                             binding.cardTel.text = cardMarker!!.TEL
-                            binding.cardInfo.text = ""
+                            var parking = ""
+                            var toilet = ""
+
+                            if(cardMarker!!.ST2.equals("Y")){
+                                parking = "장애인 전용 주차구역 O"
+                            }else{
+                                parking = "장애인 전용 주차구역 X"
+                            }
+
+                            if(cardMarker!!.ST5.equals("Y")){
+                                toilet = "장애인 화장실 O"
+                            }else{
+                                toilet = "장애인 화장실 X"
+                            }
+
+                            binding.cardInfo.text = parking
+                            binding.cardEtc.text = toilet
                             MyApplication.markerName = cardMarker!!.SISULNAME
                         }
                         3 ->{
                             val cardMarker = charging.find{ it.FCLTYNM.equals(p0?.title)}
                             binding.cardAddr.text = cardMarker!!.RDNMADR
                             binding.cardTel.text = cardMarker!!.INSTITUTIONPHONENUMBER
-                            binding.cardInfo.text = ""
+                            binding.cardInfo.text = "위치: " + cardMarker!!.INSTLLCDESC
+                            val arr = arrayOf(cardMarker!!.WEEKDAYOPEROPENHHMM, cardMarker!!.WEEKDAYOPERCOLSEHHMM)
+                            binding.cardEtc.text = "운영시간: " + arr.joinToString(" ~ ")
                             MyApplication.markerName = cardMarker!!.FCLTYNM
                         }
                     }

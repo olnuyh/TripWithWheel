@@ -24,10 +24,10 @@ class ReviewAdapter(val context : Context, val itemList : MutableList<ItemData>)
         holder.binding.run{
             itemEmailView.text = data.email
             itemDateView.text = data.date
-            itemContentView.text = data.contents
+            itemContentView.text = data.content
         }
 
-        val imageRef = MyApplication.storage.reference.child("images").child(MyApplication.markerName).child("${data.docid}.jpg")
+        val imageRef = MyApplication.storage.reference.child("images").child(MyApplication.markerName).child("${data.docId}.jpg")
 
         imageRef.downloadUrl.addOnCompleteListener { task ->
             if(task.isSuccessful){

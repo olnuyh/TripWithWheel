@@ -13,6 +13,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.LinearLayout
 import android.widget.TextView
+import androidx.annotation.Dimension
 import androidx.annotation.RequiresApi
 import androidx.core.content.ContextCompat
 import androidx.preference.PreferenceManager
@@ -55,24 +56,26 @@ class ScheduleFragment : Fragment() {
             val file = File(path)
             if(!file.exists()){
                 Log.d("mobileApp", "파일 없음")
-                binding.scrollView.visibility = View.GONE
+                binding.scheduleLayout.visibility = View.GONE
             }
             else{
                 val readFile = file.readLines()
                 var j = 1
+                binding.scheduleLayout.removeAllViews()
                 for(i in readFile){
                     val textView = TextView(context)
                     val layoutParams = LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT)
-                    layoutParams.setMargins(30, 0, 0, 10)
+                    layoutParams.setMargins(100, 40, 0, 0)
                     textView.layoutParams = layoutParams
                     textView.text = j.toString() + ". "+ i.toString()
                     val color = ContextCompat.getColor(context as MainActivity, R.color.sub)
                     textView.setTextColor(color)
-                    //textView.setTextAppearance(R.style.scheduleText)
+                    textView.setTypeface(Typeface.createFromAsset(resources.assets, "small_font.ttf"), Typeface.BOLD)
+                    textView.setTextSize(Dimension.SP, 22F)
                     binding.scheduleLayout.addView(textView)
                     j++
                 }
-                binding.scrollView.visibility = View.VISIBLE
+                binding.scheduleLayout.visibility = View.VISIBLE
             }
         }
 

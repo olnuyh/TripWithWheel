@@ -54,7 +54,7 @@ class ListFragment : Fragment() {
         binding.listViewPager.orientation = ViewPager2.ORIENTATION_HORIZONTAL //뷰페이저 동작 방향 가로로 설정
         binding.listViewPager.adapter = MyFragmentAdapter(this) //뷰페이저 어댑터 연결
 
-        val tabTitles = listOf<String>("관광지", "음식점", "화장실", "충전소") //탭에 보여질 이름
+        val tabTitles = listOf<String>("관광지", "음식점", "편의시설", "충전소") //탭에 보여질 이름
         TabLayoutMediator(binding.listTab, binding.listViewPager){ //뷰페이저와 탭레이아웃 연동
             tab, position -> tab.text = tabTitles[position]
         }.attach()

@@ -7,6 +7,7 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.tripwithwheel.databinding.FragmentListSpotBinding
 import com.example.tripwithwheel.databinding.FragmentListToiletBinding
@@ -43,6 +44,7 @@ class ListToiletFragment : Fragment() {
         val binding = FragmentListToiletBinding.inflate(inflater, container, false)
         binding.toiletRecyclerView.layoutManager = LinearLayoutManager(activity)
         binding.toiletRecyclerView.adapter = ToiletAdapter(activity as Context, MyApplication.result_toilet.viewAmenitiesInfo.row)
+        binding.toiletRecyclerView.addItemDecoration(DividerItemDecoration(activity as Context, LinearLayoutManager.VERTICAL))
 
         return binding.root
     }
