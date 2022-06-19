@@ -2,9 +2,11 @@ package com.example.tripwithwheel
 
 import android.app.Application
 import android.content.Context
+import android.content.SharedPreferences
 import android.location.Geocoder
 import android.util.Log
 import androidx.multidex.MultiDexApplication
+import androidx.preference.PreferenceManager
 import com.google.android.gms.maps.model.LatLng
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.ktx.auth

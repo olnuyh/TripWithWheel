@@ -10,19 +10,34 @@
     </PreferenceCategory>
 
     <PreferenceCategory
-        app:key="etc"
-        app:title="기타 설정">
+        app:key="notification"
+        app:title="알림 설정">
         <SwitchPreference
             app:key="change_message"
-            app:title="메시지 알림"/>
+            app:title="여행 알림"
+            app:summary="여행 알림을 받으려면 체크하세요." />
+        <ListPreference
+            app:key="change_sound"
+            app:title="알림음 선택"
+            app:entries="@array/sound"
+            app:entryValues="@array/sound"
+            app:dependency="change_message"/>
+        <MultiSelectListPreference
+            app:key="select_day"
+            app:title="날짜 선택"
+            app:entries="@array/day"
+            app:entryValues="@array/day"
+            app:dependency="change_message"/>
+    </PreferenceCategory>
+
+    <PreferenceCategory
+        app:key="etc"
+        app:title="기타 설정">
         <ListPreference
             app:key="change_color"
             app:title="배경색 선택"
             app:entries="@array/back_color"
             app:entryValues="@array/back_color_value">
         </ListPreference>
-        <SwitchPreference
-            app:key="change_mode"
-            app:title="모드 변경"/>
     </PreferenceCategory>
 </PreferenceScreen>

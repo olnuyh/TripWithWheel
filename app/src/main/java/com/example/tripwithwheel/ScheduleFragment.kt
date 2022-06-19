@@ -1,5 +1,6 @@
 package com.example.tripwithwheel
 
+import android.content.SharedPreferences
 import android.graphics.Color
 import android.graphics.Typeface
 import android.os.Bundle
@@ -14,6 +15,7 @@ import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.annotation.RequiresApi
 import androidx.core.content.ContextCompat
+import androidx.preference.PreferenceManager
 import com.example.tripwithwheel.databinding.FragmentScheduleBinding
 import org.w3c.dom.Text
 import java.io.BufferedReader
@@ -31,6 +33,7 @@ private const val ARG_PARAM2 = "param2"
 class ScheduleFragment : Fragment() {
     private var param1: String? = null
     private var param2: String? = null
+    lateinit var binding : FragmentScheduleBinding
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -45,7 +48,7 @@ class ScheduleFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         // Inflate the layout for this fragment
-        val binding = FragmentScheduleBinding.inflate(inflater, container, false)
+        binding = FragmentScheduleBinding.inflate(inflater, container, false)
         binding.calendarView.setOnDateChangeListener { calendarView, i, i2, i3 ->
             val date = i.toString() + (i2 + 1).toString() + i3.toString()
             val path = context?.filesDir.toString() + "/" + MyApplication.email + "_" + date + ".txt"
@@ -72,6 +75,7 @@ class ScheduleFragment : Fragment() {
                 binding.scrollView.visibility = View.VISIBLE
             }
         }
+
         return binding.root
     }
 
