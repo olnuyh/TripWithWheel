@@ -1,6 +1,7 @@
 package com.example.tripwithwheel
 
 import android.content.Context
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
@@ -23,10 +24,11 @@ class ReviewAdapter(val context : Context, val itemList : MutableList<ItemData>)
         holder.binding.run{
             itemEmailView.text = data.email
             itemDateView.text = data.date
-            itemContentView.text = data.content
+            itemContentView.text = data.contents
         }
 
-        val imageRef = MyApplication.storage.reference.child("images/" + MyApplication.markerName + "/${data.docId}.jpg")
+        val imageRef = MyApplication.storage.reference.child("images").child(MyApplication.markerName).child("${data.docid}.jpg")
+
         imageRef.downloadUrl.addOnCompleteListener { task ->
             if(task.isSuccessful){
                 Glide.with(context)

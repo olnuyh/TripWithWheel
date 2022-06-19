@@ -3,6 +3,7 @@ package com.example.tripwithwheel
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.util.Log
 import android.view.View
 import android.widget.Toast
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -33,7 +34,7 @@ class ReadReviewActivity : AppCompatActivity() {
 
     override fun onStart() {
         super.onStart()
-        if(MyApplication.checkAuth()){
+        if(MyApplication.checkAuth() || MyApplication.email != null){
             makeRecyclerView()
             binding.reviews.visibility = View.VISIBLE
         }
@@ -50,7 +51,7 @@ class ReadReviewActivity : AppCompatActivity() {
                 val itemList = mutableListOf<ItemData>()
                 for(document in result){
                     val item = document.toObject(ItemData::class.java)
-                    item.docId = document.id
+                    item.docid = document.id
                     itemList.add(item)
                 }
                 binding.reviews.layoutManager = LinearLayoutManager(this)

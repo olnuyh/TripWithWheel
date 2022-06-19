@@ -147,17 +147,16 @@ class HomeFragment : Fragment(), OnMapReadyCallback, GoogleApiClient.ConnectionC
             DatePickerDialog(mainActivity,
                 object : DatePickerDialog.OnDateSetListener{
                     override fun onDateSet(p0: DatePicker?, p1: Int, p2: Int, p3: Int) {
-                        val filename = p1.toString() + p2.toString() + p3.toString()
-                        val file = File(mainActivity.filesDir, "fileName.txt")
-                        val writeStream: OutputStreamWriter = file.writer()
-                        writeStream.write(MyApplication.markerName)
-                        writeStream.flush()
-
-                        val readStream : BufferedReader = file.reader().buffered()
-                        readStream.forEachLine {
-                            Log.d("mobileApp", "$it")
+                        val filename = p1.toString() + (p2 + 1).toString() + p3.toString()
+                        val file = File(mainActivity.filesDir, "${MyApplication.email}_" + "$filename" +".txt")
+                        if(!file.exists()){
+                            val writeStream: OutputStreamWriter = file.writer()
+                            writeStream.write(MyApplication.markerName)
+                            writeStream.flush()
                         }
-
+                        else{
+                            file.appendText("\n" + MyApplication.markerName)
+                        }
                     }
                 },
             calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH), calendar.get(Calendar.DATE)).show()
@@ -290,18 +289,21 @@ class HomeFragment : Fragment(), OnMapReadyCallback, GoogleApiClient.ConnectionC
                             val cardMarker = restaurant.find{ it.SISULNAME.equals(p0?.title)}
                             binding.cardAddr.text = cardMarker!!.ADDR
                             binding.cardTel.text = cardMarker!!.TEL
+                            binding.cardInfo.text = ""
                             MyApplication.markerName = cardMarker!!.SISULNAME
                         }
                         2 ->{
                             val cardMarker = toilet.find{ it.SISULNAME.equals(p0?.title)}
                             binding.cardAddr.text = cardMarker!!.ADDR
                             binding.cardTel.text = cardMarker!!.TEL
+                            binding.cardInfo.text = ""
                             MyApplication.markerName = cardMarker!!.SISULNAME
                         }
                         3 ->{
                             val cardMarker = charging.find{ it.FCLTYNM.equals(p0?.title)}
                             binding.cardAddr.text = cardMarker!!.RDNMADR
                             binding.cardTel.text = cardMarker!!.INSTITUTIONPHONENUMBER
+                            binding.cardInfo.text = ""
                             MyApplication.markerName = cardMarker!!.FCLTYNM
                         }
                     }

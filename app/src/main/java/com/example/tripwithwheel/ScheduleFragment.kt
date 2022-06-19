@@ -1,10 +1,23 @@
 package com.example.tripwithwheel
 
+import android.graphics.Color
+import android.graphics.Typeface
 import android.os.Bundle
+import android.text.method.ScrollingMovementMethod
+import android.util.Log
+import android.util.TypedValue
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.LinearLayout
+import android.widget.TextView
+import androidx.annotation.RequiresApi
+import androidx.core.content.ContextCompat
+import com.example.tripwithwheel.databinding.FragmentScheduleBinding
+import org.w3c.dom.Text
+import java.io.BufferedReader
+import java.io.File
 
 // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
 private const val ARG_PARAM1 = "param1"
@@ -32,7 +45,34 @@ class ScheduleFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_schedule, container, false)
+        val binding = FragmentScheduleBinding.inflate(inflater, container, false)
+        binding.calendarView.setOnDateChangeListener { calendarView, i, i2, i3 ->
+            val date = i.toString() + (i2 + 1).toString() + i3.toString()
+            val path = context?.filesDir.toString() + "/" + MyApplication.email + "_" + date + ".txt"
+            val file = File(path)
+            if(!file.exists()){
+                Log.d("mobileApp", "파일 없음")
+                binding.scrollView.visibility = View.GONE
+            }
+            else{
+                val readFile = file.readLines()
+                var j = 1
+                for(i in readFile){
+                    val textView = TextView(context)
+                    val layoutParams = LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT)
+                    layoutParams.setMargins(30, 0, 0, 10)
+                    textView.layoutParams = layoutParams
+                    textView.text = j.toString() + ". "+ i.toString()
+                    val color = ContextCompat.getColor(context as MainActivity, R.color.sub)
+                    textView.setTextColor(color)
+                    //textView.setTextAppearance(R.style.scheduleText)
+                    binding.scheduleLayout.addView(textView)
+                    j++
+                }
+                binding.scrollView.visibility = View.VISIBLE
+            }
+        }
+        return binding.root
     }
 
     companion object {

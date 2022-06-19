@@ -36,6 +36,9 @@ class AddressIntentService : IntentService("AddressIntentService") {
 
 
     override fun onHandleIntent(intent: Intent?) {
+        if(MyApplication.result_spot == null){
+            Thread.sleep(2000)
+        }
         Log.d("mobileApp", "start")
         val spot = MyApplication.result_spot.TbVwAttractions.row
         for (i in 0 until spot.size) {

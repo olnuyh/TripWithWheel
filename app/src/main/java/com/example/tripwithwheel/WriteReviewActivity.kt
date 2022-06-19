@@ -24,6 +24,7 @@ import java.util.*
 class WriteReviewActivity : AppCompatActivity() {
     lateinit var binding : ActivityWriteReviewBinding
     lateinit var filePath : String
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         //setContentView(R.layout.activity_write_review)
@@ -70,17 +71,16 @@ class WriteReviewActivity : AppCompatActivity() {
             }
         }
 
-        val timeS : String = SimpleDateFormat("yyyyMMdd_HHmmss").format(Date())
-        val storeDir : File? = getExternalFilesDir(Environment.DIRECTORY_PICTURES)
-        val file = File.createTempFile("JPEG_${timeS}_", ",jpg", storeDir)
-        filePath = file.absolutePath
-        val photoURI : Uri = FileProvider.getUriForFile(
-            this, "com.example.tripwithwheel.fileprovider",
-            file
-        )
-
         binding.cameraBtn.setOnClickListener {
             val intent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
+            val timeS : String = SimpleDateFormat("yyyyMMdd_HHmmss").format(Date())
+            val storeDir : File? = getExternalFilesDir(Environment.DIRECTORY_PICTURES)
+            val file = File.createTempFile("JPEG_${timeS}_", ".jpg", storeDir)
+            filePath = file.absolutePath
+            val photoURI : Uri = FileProvider.getUriForFile(
+                this, "com.example.tripwithwheel.fileprovider",
+                file
+            )
             intent.putExtra(MediaStore.EXTRA_OUTPUT, photoURI)
             requestCameraFileLauncher.launch(intent)
         }
@@ -95,7 +95,6 @@ class WriteReviewActivity : AppCompatActivity() {
         if(item.itemId === R.id.addReview){
             if(binding.reviewImg.drawable !== null && binding.reviewText.text.isNotEmpty()){
                 saveStore()
-                finish()
             }
             else{
                 Toast.makeText(this, "사진을 추가하거나 내용을 입력하세요.", Toast.LENGTH_SHORT).show()
@@ -121,15 +120,16 @@ class WriteReviewActivity : AppCompatActivity() {
             }
     }
 
-    private fun uploadImage(docId : String){
+    private fun uploadImage(imageId : String){
         val storage = MyApplication.storage
         val storageRef = storage.reference
-        val imageRef = storageRef.child("images/" + MyApplication.markerName + "/${docId}.jpg")
+        val imageRef = storageRef.child("images").child(MyApplication.markerName).child("${imageId}.jpg")
 
         val file = Uri.fromFile(File(filePath))
         imageRef.putFile(file)
             .addOnSuccessListener {
                 Toast.makeText(this, "리뷰 등록 완료", Toast.LENGTH_SHORT).show()
+                finish()
             }
             .addOnFailureListener{
                 Log.d("mobileApp", "file save error")
